@@ -6,7 +6,17 @@ from websocket import WebSocketApp
 import socket
 
 # Pobierz nazwę komputera jako identyfikator użytkownika
-client_name = socket.gethostname()
+computer_name = socket.gethostname()
+
+# Mapa nazw komputerów do imion
+user_names = {
+    "BIMES_3": "Mateusz",
+    "BIMES_11": "Arek",
+    "BIMES_2": "Natalia"
+}
+
+# Przypisz nazwę użytkownika, jeśli jest w mapie, inaczej użyj nazwy komputera
+client_name = user_names.get(computer_name, computer_name)
 
 # Funkcja do odbierania wiadomości z WebSocketu
 def on_message(ws, message):
@@ -26,19 +36,21 @@ def on_open(ws):
     chat_window.config(state=tk.NORMAL)
     chat_window.insert(tk.END, f"System: Połączono jako {client_name}\n")
     chat_window.config(state=tk.DISABLED)
+    ws.send(json.dumps({"user": client_name}))
 
 # Funkcja do wysyłania wiadomości
 def send_message():
     message = entry.get()
     if message:
-        ws.send(json.dumps({"message": message}))
+        ws.send(json.dumps({"user": client_name, "message": message}))
         entry.delete(0, tk.END)
 
 # Uruchom WebSocket w osobnym wątku
 def start_websocket():
     global ws
     ws = WebSocketApp(
-        "wss://serwer-chatu.onrender.com/ws", on_open=on_open,
+        "wss://serwer-chatu.onrender.com/ws",
+        on_open=on_open,
         on_message=on_message,
         on_error=on_error,
         on_close=on_close
