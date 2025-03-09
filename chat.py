@@ -13,6 +13,7 @@ user_names = {
     "BIMES_3": "Mateusz",
     "BIMES_11": "Arek",
     "BIMES_2": "Natalia"
+"KNKPK": "Arek Dom"
 }
 
 # Przypisz nazwę użytkownika, jeśli jest w mapie, inaczej użyj nazwy komputera
