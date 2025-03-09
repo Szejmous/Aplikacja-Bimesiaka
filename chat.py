@@ -38,8 +38,7 @@ def send_message():
 def start_websocket():
     global ws
     ws = WebSocketApp(
-        "https://serwer-chatu.onrender.com",  # Lokalnie, na Render zmienimy na adres serwera
-        on_open=on_open,
+        "wss://serwer-chatu.onrender.com",          on_open=on_open,
         on_message=on_message,
         on_error=on_error,
         on_close=on_close
