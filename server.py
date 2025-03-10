@@ -1,6 +1,5 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import json
-import os
 
 app = FastAPI()
 
@@ -22,7 +21,11 @@ async def websocket_endpoint(websocket: WebSocket):
                 for client in clients:
                     await client.send_text(join_message)
             else:
-                broadcast_message = json.dumps({"user": clients[websocket], "message": message["message"]})
+                # Sprawdź, czy wiadomość zawiera obraz
+                if "image" in message:
+                    broadcast_message = json.dumps({"user": clients[websocket], "image": message["image"]})
+                else:
+                    broadcast_message = json.dumps({"user": clients[websocket], "message": message["message"]})
                 for client in clients:
                     await client.send_text(broadcast_message)
     except WebSocketDisconnect:
@@ -35,4 +38,4 @@ async def websocket_endpoint(websocket: WebSocket):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=10000)  # Stały port 8000 dla lokalnego testowania
+    uvicorn.run(app, host="0.0.0.0", port=10000)
