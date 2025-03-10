@@ -6,8 +6,7 @@ from websocket import WebSocketApp
 import socket
 import base64
 from io import BytesIO
-from PIL import Image, ImageTk
-import pyperclip  # Do obsługi schowka
+from PIL import Image, ImageTk, ImageGrab
 
 # Pobierz nazwę komputera jako identyfikator użytkownika
 computer_name = socket.gethostname()
@@ -33,7 +32,7 @@ def on_message(ws, message):
         photo = ImageTk.PhotoImage(img)
         chat_window.image_create(tk.END, image=photo)
         chat_window.insert(tk.END, f"\n{data['user']}: [Obraz]\n")
-        chat_window.image_refs.append(photo)  # Zachowaj referencję, aby obraz się nie usunął
+        chat_window.image_refs.append(photo)  # Zachowaj referencję
     else:  # Zwykła wiadomość tekstowa
         chat_window.insert(tk.END, f"{data['user']}: {data['message']}\n")
     chat_window.config(state=tk.DISABLED)
@@ -52,29 +51,31 @@ def on_open(ws):
     ws.send(json.dumps({"user": client_name}))
 
 # Funkcja do wysyłania wiadomości
-def send_message(event=None):  # Dodano opcjonalny parametr event dla Enter
+def send_message(event=None):
     message = entry.get().strip()
     if message:
         ws.send(json.dumps({"user": client_name, "message": message}))
         entry.delete(0, tk.END)
-    return "break"  # Zapobiega domyślnemu zachowaniu Enter (np. nowa linia)
+    return "break"
 
 # Funkcja do wklejania obrazu ze schowka
 def paste_image(event):
     try:
-        # Sprawdź, czy w schowku jest obraz
         img = ImageGrab.grabclipboard()
         if img:
-            # Konwertuj obraz na base64
             buffered = BytesIO()
             img.save(buffered, format="PNG")
             img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
             ws.send(json.dumps({"user": client_name, "image": img_base64}))
-            entry.delete(0, tk.END)  # Wyczyść pole tekstowe po wklejeniu
+            entry.delete(0, tk.END)
         else:
-            print("Brak obrazu w schowku")
+            chat_window.config(state=tk.NORMAL)
+            chat_window.insert(tk.END, "System: Brak obrazu w schowku\n")
+            chat_window.config(state=tk.DISABLED)
     except Exception as e:
-        print(f"Błąd wklejania obrazu: {e}")
+        chat_window.config(state=tk.NORMAL)
+        chat_window.insert(tk.END, f"System: Błąd wklejania obrazu: {e}\n")
+        chat_window.config(state=tk.DISABLED)
     return "break"
 
 # Uruchom WebSocket w osobnym wątku
@@ -102,8 +103,8 @@ chat_window.image_refs = []  # Lista do przechowywania referencji obrazów
 # Pole do wpisywania wiadomości
 entry = tk.Entry(chat_root, width=40)
 entry.pack(padx=10, pady=5, side=tk.LEFT)
-entry.bind("<Return>", send_message)  # Wiązanie Enter z wysyłaniem wiadomości
-entry.bind("<Control-v>", paste_image)  # Wiązanie Ctrl+V z wklejaniem obrazu
+entry.bind("<Return>", send_message)
+entry.bind("<Control-v>", paste_image)
 
 # Przycisk do wysyłania wiadomości
 send_button = tk.Button(chat_root, text="Wyślij", command=send_message)
