@@ -17,6 +17,7 @@ user_names = {
     "BIMES_11": "Arek",
     "BIMES_2": "Natalia",
     "KNKPK": "Arek Dom"
+    "DESKTOP-9P9KOUS": "Kotka Kotkowska"
 }
 
 # Przypisz nazwę użytkownika, jeśli jest w mapie, inaczej użyj nazwy komputera
@@ -93,7 +94,7 @@ def start_websocket():
 # Główne okno chatu
 chat_root = tk.Tk()
 chat_root.title(f"Chat - {client_name}")
-chat_root.geometry("400x500")
+chat_root.geometry("600x600")
 
 # Pole do wyświetlania wiadomości
 chat_window = scrolledtext.ScrolledText(chat_root, wrap=tk.WORD, state=tk.DISABLED, height=20, width=50)
