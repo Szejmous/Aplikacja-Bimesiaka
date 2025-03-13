@@ -11,7 +11,7 @@ from PIL import Image, ImageTk, ImageGrab
 # Pobierz nazwę komputera jako identyfikator użytkownika
 computer_name = socket.gethostname()
 
-# Mapa nazw komputerów do imion
+# Mapa nazw komputerów do imiononoikjn
 user_names = {
     "BIMES_3": "Mateusz",
     "BIMES_11": "Arek",
