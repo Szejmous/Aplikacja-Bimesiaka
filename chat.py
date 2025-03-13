@@ -16,7 +16,7 @@ user_names = {
     "BIMES_3": "Mateusz",
     "BIMES_11": "Arek",
     "BIMES_2": "Natalia",
-    "KNKPK": "Arek Dom"
+    "KNKPK": "Arek Dom",
     "DESKTOP-9P9KOUS": "Kotka Kotkowska"
 }
 
